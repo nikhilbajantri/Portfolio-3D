@@ -11,7 +11,7 @@ export const LINKEDIN_URL: string = '';
 /** Full GitHub profile URL, e.g. https://github.com/<handle> */
 export const GITHUB_URL: string = 'https://github.com/nikhilbajantri';
 /** Public site URL used for canonical links, OG and sitemap (no trailing slash). */
-export const SITE_URL: string = 'https://nikhilbajantri.dev';
+export const SITE_URL: string = '';
 /** Live URL of the Great British Doner website. */
 export const GREAT_BRITISH_DONER_URL: string = '';
 /** Live URL of the Olea Social website. */
