@@ -1,0 +1,169 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+/*
+ * Journey layout modes. Must match the camera's narrow test in CameraRig/spline
+ * (aspect < 0.8): "narrow" docks the copy in the lower half and lifts the scene;
+ * "wide" keeps the copy in a left column beside the scene.
+ */
+@custom-variant wide {
+  @media (width >= 48rem) and (min-aspect-ratio: 4/5) {
+    @slot;
+  }
+}
+/* Either condition: two media blocks give OR semantics. */
+@custom-variant narrow {
+  @media (width < 48rem) {
+    @slot;
+  }
+  @media (max-aspect-ratio: 4/5) {
+    @slot;
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    /* Total journey scroll length (see components/dom/Journey.tsx). */
+    --journey: 1000vh;
+    @media (width >= 48rem) {
+      --journey: 1250vh;
+    }
+  }
+
+  html {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--color-bg);
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--color-signal);
+    color: var(--color-on-signal);
+  }
+
+  /* Visible 2px focus ring + 2px offset on every focusable element. Never removed. */
+  :focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  a,
+  button,
+  [role='button'],
+  summary,
+  label[for] {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  p {
+    max-width: var(--container-prose);
+  }
+
+  img,
+  video,
+  canvas {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+/* Lenis recommended styles */
+@layer base {
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis:not(.lenis-autoToggle).lenis-stopped {
+    overflow: clip;
+  }
+  .lenis [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+}
+
+@utility glass {
+  background: var(--color-glass);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(var(--blur-glass));
+  -webkit-backdrop-filter: blur(var(--blur-glass));
+}
+
+@utility label-mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+@utility container-content {
+  width: 100%;
+  max-width: var(--container-content);
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+  @media (width >= 48rem) {
+    padding-inline: var(--space-6);
+  }
+}
+
+@utility sr-only-focusable {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  &:focus-visible {
+    width: auto;
+    height: auto;
+    clip-path: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+  /* Opacity fades are the one motion reduced-motion keeps (e.g. the canvas between held poses). */
+  .allow-fade {
+    transition-duration: 250ms !important;
+  }
+}
+
+/* Custom cursor (fine pointers only; see components/dom/Cursor.tsx). Text keeps the
+   native I-beam so selection still works; interactive elements hand over to the ring. */
+@layer base {
+  html.has-custom-cursor,
+  html.has-custom-cursor :is(a, button, [role='button'], summary, label[for]) {
+    cursor: none;
+  }
+  html.has-custom-cursor :is(p, li, dd, dt, h1, h2, h3, h4, input, textarea) {
+    cursor: text;
+  }
+  html.has-custom-cursor :is(a, button, [role='button'], summary) * {
+    cursor: none;
+  }
+}
